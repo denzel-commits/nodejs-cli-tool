@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const program = require('commander');
-const { encode, decode } = require('../cipher-lib');
+const fs = require('fs');
+const caesar_cipher = require('../cipher-lib');
 const { MESSAGE } = require('../messages');
 
 let err = false;
@@ -45,8 +46,41 @@ if(options.shift === undefined) {
 } 
 
 //validate input file path, check if exists
+if(options.input) {
+
+    if( typeof(options.input) === "boolean" ) {
+        process.stderr.write("Please provide input file name");
+        err = true;
+    }else{
+          // Check if the file exists in the current directory, and if it is readable.
+        fs.access(options.input, fs.constants.F_OK | fs.constants.R_OK, (err) => {
+            if (err) {
+            console.error(
+                `Input file ${err.code === 'ENOENT' ? 'does not exist' : 'is not readable'}`);
+                err = true;
+            } 
+        });
+
+        var useInputFile = true;
+    }
+
+
+}
 
 //validate ouput file path, check if exists and writable 
+if(options.output && typeof options.output === "string" ) {
+        
+    // Check if the file exists in the current directory, and if it is writable.
+    fs.access(options.input, fs.constants.F_OK | fs.constants.W_OK, (err) => {
+        if (err) {
+        console.error(
+            `Output file ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`);
+            err = true;
+        } 
+    });
+
+    var useOutputFile = true;
+}
 
 if( err ){
     process.stderr.write(MESSAGE['USAGE']);
@@ -65,11 +99,31 @@ pipeline(
 switch( options.action.toLowerCase() ){
     
     case 'encode':
-        console.log ( encode(options.shift, 'This is secret. Message about "_" symbol!') );
+
+        if( useInputFile ){
+            //get file contents string
+            const fileContent = fs.readFileSync(options.input, 'utf8');
+
+            //use file contents
+            fileEncodedContent = caesar_cipher.encode(options.shift, fileContent);
+
+            //get file contents string
+            fs.appendFileSync(options.output, fileEncodedContent);
+        }else{
+            process.stdin.pipe(require('split')()).on('data', processLine);
+
+            function processLine (line) {
+                console.log( caesar_cipher.encode(options.shift, line) );
+            }
+        }    
     break;
     
     case 'decode':
-        console.log ( decode(options.shift, 'Aopz pz zljyla. Tlzzhnl hivba "_" zftivs!') );
+        //get file contents string
+        const fileToDecodeContent = fs.readFileSync(options.input, 'utf8');
+
+        //use file contents
+        console.log ( caesar_cipher.decode(options.shift, fileContent) );
     break;
 
     default:

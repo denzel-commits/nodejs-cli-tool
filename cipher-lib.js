@@ -1,5 +1,3 @@
-"use strict"
-
 const encode = (shift, input) => {
     let output = '';
     const maxShift = 26;
