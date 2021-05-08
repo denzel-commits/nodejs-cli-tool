@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const program = require('commander');
 const fs = require('fs');
+const {Transform, pipeline} = require('stream');
 const caesar_cipher = require('../cipher-lib');
 const { MESSAGE } = require('../messages');
 
@@ -71,7 +72,7 @@ if(options.input) {
 if(options.output && typeof options.output === "string" ) {
         
     // Check if the file exists in the current directory, and if it is writable.
-    fs.access(options.input, fs.constants.F_OK | fs.constants.W_OK, (err) => {
+    fs.access(options.output, fs.constants.F_OK | fs.constants.W_OK, (err) => {
         if (err) {
         console.error(
             `Output file ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`);
@@ -88,46 +89,51 @@ if( err ){
 }
 
 if(options.debug) console.log(options);
-/*
-use streams
-pipeline(
-    input ?  input_stream :  process.stdin, // input file stream or stdin stream
-    transform(args), // Transform stream
-    output ?  output_stream :  process.stdout // output file stream or stdout stream
-  )
-*/
+
 switch( options.action.toLowerCase() ){
     
     case 'encode':
 
-        if( useInputFile ){
-            //get file contents string
-            const fileContent = fs.readFileSync(options.input, 'utf8');
-
-            //use file contents
-            fileEncodedContent = caesar_cipher.encode(options.shift, fileContent);
-
-            //get file contents string
-            fs.appendFileSync(options.output, fileEncodedContent);
-        }else{
-            process.stdin.pipe(require('split')()).on('data', processLine);
-
-            function processLine (line) {
-                console.log( caesar_cipher.encode(options.shift, line) );
+        const encodeStream = new Transform({
+            transform(chunk, _, cb) {
+              cb(null, caesar_cipher.encode(options.shift, chunk.toString()) );
             }
-        }    
+          });
+
+        pipeline(
+            useInputFile ? fs.createReadStream(options.input) : process.stdin,
+            encodeStream,
+            useOutputFile ? fs.createWriteStream(options.output, { flags: 'a' }) : process.stdout,
+            (err) => {
+              if (err) {
+                process.stderr.write('Stream error')
+              }
+            }
+          );
+
     break;
     
     case 'decode':
-        //get file contents string
-        const fileToDecodeContent = fs.readFileSync(options.input, 'utf8');
 
-        //use file contents
-        console.log ( caesar_cipher.decode(options.shift, fileContent) );
+        const decodeStream = new Transform({
+            transform(chunk, _, cb) {
+                cb(null, caesar_cipher.decode(options.shift, chunk.toString()) );
+            }
+            });  
+
+        pipeline(
+            useInputFile ? fs.createReadStream(options.input) : process.stdin,
+            decodeStream,
+            useOutputFile ? fs.createWriteStream(options.output, { flags: 'a' }) : process.stdout,
+            (err) => {
+              if (err) {
+                process.stderr.write('Stream error')
+              }
+            }
+          );
     break;
 
     default:
-
     break;       
 }
 
