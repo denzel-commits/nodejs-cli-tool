@@ -13,17 +13,17 @@ const encode = (shift, input) => {
       if( (/[a-zA-Z]/).test( letter ) ){    
       
           if(letter === letter.toUpperCase()){
-          if ((code + shift) < "A".charCodeAt(0)) code = code + (maxShift - Math.abs(shift) );
+          if ( (code + shift) < "A".charCodeAt(0)) code = code + (maxShift - Math.abs(shift) );
           else
-            if ((code + shift) > "Z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );
+            if ( (code + shift) > "Z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );
           else
             code = code + shift;
             
        }else{
       
-          if ((code + shift) < "a".charCodeAt(0)) code = code + (maxShift - Math.abs(shift)) ;
+          if ( (code + shift) < "a".charCodeAt(0)) code = code + (maxShift - Math.abs(shift) );
           else
-            if ((code + shift) > "z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );          
+            if ( (code + shift) > "z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );          
           else
             code = code + shift;
        }
@@ -53,17 +53,17 @@ const decode = (shift, input) => {
       if( (/[a-zA-Z]/).test( letter ) ){    
       
           if(letter === letter.toUpperCase()){
-          if ((code - shift) < "A".charCodeAt(0)) code = code + (maxShift - Math.abs(shift) );
+          if ( (code - shift) < "A".charCodeAt(0)) code = code + (maxShift - Math.abs(shift) );
           else
-            if ((code - shift) > "Z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );
+            if ( (code - shift) > "Z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );
           else
             code = code - shift;
             
        }else{
       
-          if ((code - shift) < "a".charCodeAt(0)) code = code + (maxShift - Math.abs(shift)) ;
+          if ( (code - shift) < "a".charCodeAt(0)) code = code + (maxShift - Math.abs(shift) );
           else
-            if ((code - shift) > "z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );          
+            if ( (code - shift) > "z".charCodeAt(0)) code = code - (maxShift - Math.abs(shift) );          
           else
             code = code - shift;
        }

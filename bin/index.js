@@ -55,6 +55,7 @@ if( err ){
 
 if(options.debug) console.log(options);
 /*
+use streams
 pipeline(
     input ?  input_stream :  process.stdin, // input file stream or stdin stream
     transform(args), // Transform stream
