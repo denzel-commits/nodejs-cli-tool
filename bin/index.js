@@ -3,13 +3,13 @@ const program = require('commander');
 const fs = require('fs');
 const {Transform, pipeline} = require('stream');
 const caesar_cipher = require('../cipher-lib');
-const { MESSAGE } = require('../messages');
+const validation = require('../validation');
 
-let err = false;
+let validationErr = false;
 
 program 
-    .version(MESSAGE['VERSION'])
-    .description(MESSAGE['DESCRIPTION']);
+    .version('1.0.0')
+    .description('Caesar cipher CLI tool');
 
 program
     .option('-d, --debug', 'Debug')
@@ -18,77 +18,51 @@ program
     .option('-i, --input [input file]', 'Optional. input file')
     .option('-o, --output [output file]', 'Optional. output file');
 
-program.addHelpText('after', MESSAGE['USAGE']);
+program.addHelpText('after', 'Example call:\n\r$ caesar-cipher -a encode -s 7 -i ./demo/source_file -o ./demo/destination_file');
 
 program.parse(process.argv);
 
 const options = program.opts();
 
+if(options.debug) console.log(options);
 
-//validate action
-if(options.action === undefined) { 
-    process.stderr.write( MESSAGE['NOACTION'] ); 
-    err = true;
-}else if( !['encode', 'decode', 'ENCODE', 'DECODE'].includes(options.action) ){
-    process.stderr.write(MESSAGE['INVALID_ACTION']);
-    err = true;
+
+if( err = validation.validateAction(options.action) ){
+    console.error( err );
+    validationErr = true;
 }
 
-//validate shift
-if(options.shift === undefined) { 
-    process.stderr.write( MESSAGE['NOSHIFT'] );
-    err = true;
-}else if( !Number.isInteger( parseInt(options.shift) ) ){
-    process.stderr.write( 'Shift should be a number' );
-
-    err = true;
+if( err = validation.validateShift(options.shift) ){
+    console.error( err );
+    validationErr = true;
 }else{
     options.shift = parseInt(options.shift);
-} 
+}
 
-//validate input file path, check if exists
-if(options.input) {
-
-    if( typeof(options.input) === "boolean" ) {
-        process.stderr.write("Please provide input file name");
-        err = true;
+var useInputFile = false;
+if( options.input !== undefined ) {
+    if( err = validation.validateInput(options.input) ){
+        console.error( err );
+        validationErr = true;
     }else{
-          // Check if the file exists in the current directory, and if it is readable.
-        fs.access(options.input, fs.constants.F_OK | fs.constants.R_OK, (err) => {
-            if (err) {
-            console.error(
-                `Input file ${err.code === 'ENOENT' ? 'does not exist' : 'is not readable'}`);
-                err = true;
-            } 
-        });
-
-        var useInputFile = true;
+        useInputFile = true;
     }
-
-
 }
 
-//validate ouput file path, check if exists and writable 
-if(options.output && typeof options.output === "string" ) {
-        
-    // Check if the file exists in the current directory, and if it is writable.
-    fs.access(options.output, fs.constants.F_OK | fs.constants.W_OK, (err) => {
-        if (err) {
-        console.error(
-            `Output file ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`);
-            err = true;
-        } 
-    });
-
-    var useOutputFile = true;
+var useOutputFile = false;
+if( options.output !== undefined ) {
+    if( err = validation.validateOutput(options.output) ){
+        console.error( err );
+        validationErr = true;
+    }else{
+        useOutputFile = true;
+    }
 }
 
-if( err ){
-    process.stderr.write(MESSAGE['USAGE']);
+if( validationErr ){
+    console.error('\n\rExample call:\n\r$ caesar-cipher -a encode -s 7 -i ./demo/input.txt -o ./demo/output.txt');
     process.exit(1);
 }
-
-if(options.debug) console.log(options);
 
 switch( options.action.toLowerCase() ){
     
