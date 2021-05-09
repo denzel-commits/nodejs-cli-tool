@@ -2,8 +2,8 @@
 const program = require('commander');
 const fs = require('fs');
 const {Transform, pipeline} = require('stream');
-const caesar_cipher = require('../cipher-lib');
 const validation = require('../validation');
+const transformStream = require('../transform');
 
 let validationErr = false;
 
@@ -68,19 +68,13 @@ switch( options.action.toLowerCase() ){
     
     case 'encode':
 
-        const encodeStream = new Transform({
-            transform(chunk, _, cb) {
-              cb(null, caesar_cipher.encode(options.shift, chunk.toString()) );
-            }
-          });
-
         pipeline(
             useInputFile ? fs.createReadStream(options.input) : process.stdin,
-            encodeStream,
+            transformStream.encode(options.shift),
             useOutputFile ? fs.createWriteStream(options.output, { flags: 'a' }) : process.stdout,
             (err) => {
               if (err) {
-                process.stderr.write('Stream error')
+                process.stderr.write('Stream error: ' + err)
               }
             }
           );
@@ -89,19 +83,13 @@ switch( options.action.toLowerCase() ){
     
     case 'decode':
 
-        const decodeStream = new Transform({
-            transform(chunk, _, cb) {
-                cb(null, caesar_cipher.decode(options.shift, chunk.toString()) );
-            }
-            });  
-
         pipeline(
             useInputFile ? fs.createReadStream(options.input) : process.stdin,
-            decodeStream,
+            transformStream.decode(options.shift),
             useOutputFile ? fs.createWriteStream(options.output, { flags: 'a' }) : process.stdout,
             (err) => {
               if (err) {
-                process.stderr.write('Stream error')
+                process.stderr.write('Stream error: ' + err)
               }
             }
           );

@@ -16,7 +16,7 @@ module.exports = {
 
     validateAction: (param) => {
         if(param === undefined) { 
-            return 'Missing action, please provide "encode" to encode or "decode" to decode input text via --action option'; 
+            return 'Missing action, please provide "encode" to encrypt or "decode" to decrypt input text via --action option'; 
         }else if( !['encode', 'decode'].includes(param.toLowerCase()) ){
             return 'Invalid action, please use "encode" or "decode"';
         }else{
