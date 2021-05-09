@@ -1,6 +1,6 @@
-# What is "nodejs-caesar-cipher"?
+# What is "Caesar-cipher-cli-tool"?
 
-Nodejs-caesar-cipher is a command line tool that encode and decode a text by Caesar cipher.
+Caesar-cipher-cli-tool is a command line tool that encode and decode a text by Caesar cipher.
 
 It can be used to encode/decode letters of latin aplhabet from file or console. All other characters including letters from other languages, numbers, punctauation marks, etc. remain unchanged.
 
