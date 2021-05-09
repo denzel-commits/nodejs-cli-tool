@@ -2,7 +2,7 @@
 
 Nodejs-caesar-cipher is a command line tool that encode and decode a text by Caesar cipher.
 
-It can be used to encode/decode letters of latin aplhabet from file or console. All othe characters including letters from other languages, numbers, punctauation marks, etc. remain unchanged.
+It can be used to encode/decode letters of latin aplhabet from file or console. All other characters including letters from other languages, numbers, punctauation marks, etc. remain unchanged.
 
 ---
 
@@ -49,7 +49,7 @@ The "action" is mandatory option, it can take the values of "encode" and "decode
 
 The "shift" is mandatory option, option must be an integer value, it denotes a shift of letters for encryption or decryption.
 
-The "input" option is optional, file path. If specified text from file be used as source text for encryption or decryption. If not specified console input will be used as source text.
+The "input" option is optional, file path. If specified text from file will be used as source text for encryption or decryption. If not specified console input will be used as source text.
 
 The "output" option is optional, file path. If specified will be used as destination for encrypted or decrypted text. If not specified console will be used as destination for resulting text.
 
@@ -57,8 +57,8 @@ The "output" option is optional, file path. If specified will be used as destina
 
 # Usage examples
 
-$ caesar-cipher -a encode -s 7
-$ caesar-cipher -a encode -s 7 -i ./demo/input.txt -o ./demo/output.txt
-$ caesar-cipher -a encode -s 7 -i ./demo/input.txt
-$ caesar-cipher -a encode -s 7 -o ./demo/output.txt'
+* $ caesar-cipher -a encode -s 7
+* $ caesar-cipher -a encode -s 7 -i ./demo/input.txt -o ./demo/output.txt
+* $ caesar-cipher -a encode -s 7 -i ./demo/input.txt
+* $ caesar-cipher -a encode -s 7 -o ./demo/output.txt'
 
