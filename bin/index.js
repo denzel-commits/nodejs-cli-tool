@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const program = require('commander');
 const fs = require('fs');
-const {Transform, pipeline} = require('stream');
+const {pipeline} = require('stream');
 const validation = require('../validation');
 const transformStream = require('../transform');
 
