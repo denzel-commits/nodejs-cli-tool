@@ -49,9 +49,9 @@ The "action" is mandatory option, it can take the values of "encode" and "decode
 
 The "shift" is mandatory option, option must be an integer value, it denotes a shift of letters for encryption or decryption.
 
-The "input" option is optional, file path. If specified text from file be used as source text for encryption or decryption.
+The "input" option is optional, file path. If specified text from file be used as source text for encryption or decryption. If not specified console input will be used as source text.
 
-The "output" option is optional, file path. If specified will be used as destination for encrypted or decrypted text.
+The "output" option is optional, file path. If specified will be used as destination for encrypted or decrypted text. If not specified console will be used as destination for resulting text.
 
 ---
 
