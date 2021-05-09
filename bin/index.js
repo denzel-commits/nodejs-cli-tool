@@ -13,12 +13,12 @@ program
 
 program
     .option('-d, --debug', 'Debug')
-    .option('-a, --action <action>', 'Required option. Action encode or decode.')
-    .option('-s, --shift <shift>', 'Required option. Shift.')
-    .option('-i, --input [input file]', 'Optional. input file')
-    .option('-o, --output [output file]', 'Optional. output file');
+    .option('-a, --action <action>', 'Required option. Values supported: "encode", "decode".')
+    .option('-s, --shift <number>', 'Required option. Shift.')
+    .option('-i, --input [input file]', 'Optional. Input file')
+    .option('-o, --output [output file]', 'Optional. Output file');
 
-program.addHelpText('after', 'Example call:\n\r$ caesar-cipher -a encode -s 7 -i ./demo/source_file -o ./demo/destination_file');
+program.addHelpText('after', 'Example call:\n\r$ caesar-cipher -a encode -s 7 -i ./demo/input.txt -o ./demo/output.txt');
 
 program.parse(process.argv);
 
@@ -40,7 +40,7 @@ if( err = validation.validateShift(options.shift) ){
 }
 
 var useInputFile = false;
-if( options.input !== undefined ) {
+if( options.input !== undefined && typeof(options.input) !== "boolean" ) {
     if( err = validation.validateInput(options.input) ){
         console.error( err );
         validationErr = true;
@@ -50,7 +50,7 @@ if( options.input !== undefined ) {
 }
 
 var useOutputFile = false;
-if( options.output !== undefined ) {
+if( options.output !== undefined && typeof(options.output) !== "boolean" ) {
     if( err = validation.validateOutput(options.output) ){
         console.error( err );
         validationErr = true;
